@@ -157,7 +157,7 @@ $conn->close();
 
             <button type="submit">Registrarse</button>
             
-            <button type="button" onclick="window.location.href='index.html'">Volver</button>
+            <button type="button" onclick="window.location.href='inicio_sesion.php'">Iniciar Sesión</button>
         </form>
     </main>
 

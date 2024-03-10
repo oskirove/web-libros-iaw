@@ -113,44 +113,47 @@
         </form>
         
         <?php
-        // Verifica si se enviaron datos de inicio de sesión
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            session_start();
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                // Conexión a la base de datos
+                $servername = "localhost";
+                $username = "root";
+                $password = "Prueba_123";
+                $database = "Catálogo";
             
-            // Conexión a la base de datos
-            $servername = "localhost";
-            $username = "root";
-            $password = "Prueba_123";
-            $database = "Catálogo";
-
-            $conn = new mysqli($servername, $username, $password, $database);
-
-            // Verifica la conexión
-            if ($conn->connect_error) {
-                die("Conexión fallida: " . $conn->connect_error);
+                $conn = new mysqli($servername, $username, $password, $database);
+            
+                // Verifica la conexión
+                if ($conn->connect_error) {
+                    die("Conexión fallida: " . $conn->connect_error);
+                }
+            
+                // Obtiene los valores del formulario
+                $username = $_POST["username"];
+                $password = $_POST["password"];
+            
+                // Consulta SQL para verificar la existencia del usuario y contraseña
+                $sql = "SELECT * FROM usuario WHERE usuario = '$username' AND contrasinal = '$password'";
+                $result = $conn->query($sql);
+            
+                // Verifica si se encontraron resultados
+                if ($result->num_rows > 0) {
+                    // Inicio de sesión exitoso, establece la variable de sesión y redirige a catalogo.php
+                    $_SESSION['nombreUsuario'] = $username;
+                    header("Location: catalogo.php");
+                    exit();
+                } else {
+                    // Credenciales incorrectas
+                    echo "<p>Nombre de usuario o contraseña incorrectos</p>";
+                }
+            
+                // Cierra la conexión a la base de datos
+                $conn->close();
             }
-
-            // Obtiene los valores del formulario
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-
-            // Consulta SQL para verificar la existencia del usuario y contraseña
-            $sql = "SELECT * FROM usuario WHERE usuario = '$username' AND contrasinal = '$password'";
-            $result = $conn->query($sql);
-
-            // Verifica si se encontraron resultados
-            if ($result->num_rows > 0) {
-                // Inicio de sesión exitoso, redirige a catalogo.php
-                header("Location: catalogo.php");
-                exit();
-            } else {
-                // Credenciales incorrectas
-                echo "<p>Nombre de usuario o contraseña incorrectos</p>";
-            }
-
-            // Cierra la conexión a la base de datos
-            $conn->close();
-        }
         ?>
+
 
     </main>
     <footer>
