@@ -1,3 +1,45 @@
+<?php
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Conexión a la base de datos
+    $servername = "localhost";
+    $username = "root";
+    $password = "Prueba_123";
+    $database = "Catálogo";
+
+    $conn = new mysqli($servername, $username, $password, $database);
+
+    // Verifica la conexión
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
+
+    // Obtiene los valores del formulario
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    // Consulta SQL para verificar la existencia del usuario y contraseña
+    $sql = "SELECT * FROM usuario WHERE usuario = '$username' AND contrasinal = '$password'";
+    $result = $conn->query($sql);
+
+    // Verifica si se encontraron resultados
+    if ($result->num_rows > 0) {
+        // Inicio de sesión exitoso, establece la variable de sesión y redirige a catalogo.php
+        $_SESSION['nombreUsuario'] = $username;
+        header("Location: catalogo.php");
+        exit();
+    } else {
+        // Credenciales incorrectas
+        $error_message = "Nombre de usuario o contraseña incorrectos";
+    }
+
+    // Cierra la conexión a la base de datos
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -24,11 +66,11 @@
         }
 
         header img {
-            max-width: 200px; /* Ajusta el tamaño según tus necesidades */
+            max-width: 200px;
             height: auto;
             display: block;
             margin: 0 auto;
-            filter: brightness(0) invert(1); /* Cambia el color a blanco */
+            filter: brightness(0) invert(1); 
         }
 
         footer {
@@ -76,9 +118,9 @@
             width: 100%;
             margin-bottom: 10px;
             text-align: center;
-            text-decoration: none; /* Agregado para quitar el subrayado predeterminado del enlace */
-            display: block; /* Hacer que el enlace ocupe todo el ancho del contenedor */
-            box-sizing: border-box; /* Agregado para que el padding no afecte el tamaño total */
+            text-decoration: none; 
+            display: block;
+            box-sizing: border-box;
             
         }
 
@@ -87,7 +129,6 @@
             background-color: #eae0d5;
             color: #0a0908;
         }
-
     </style>
 </head>
 
@@ -99,64 +140,23 @@
 
     <main>
         <h1>Inicio de Sesión</h1>
-        <form action="inicio_sesion.php" method="POST">
-            <input type="text" id="username" name="username" required placeholder="Nombre de Usuario">
-
-            <input type="password" id="password" name="password" required placeholder="Contraseña">
-
-            <button type="submit">Acceder</button>
-
-            <a href="registro.php">Registrarse</a>
-
-            <a href="index.html">Volver</a>
-
-        </form>
-        
         <?php
-            session_start();
-
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                // Conexión a la base de datos
-                $servername = "localhost";
-                $username = "root";
-                $password = "Prueba_123";
-                $database = "Catálogo";
-            
-                $conn = new mysqli($servername, $username, $password, $database);
-            
-                // Verifica la conexión
-                if ($conn->connect_error) {
-                    die("Conexión fallida: " . $conn->connect_error);
-                }
-            
-                // Obtiene los valores del formulario
-                $username = $_POST["username"];
-                $password = $_POST["password"];
-            
-                // Consulta SQL para verificar la existencia del usuario y contraseña
-                $sql = "SELECT * FROM usuario WHERE usuario = '$username' AND contrasinal = '$password'";
-                $result = $conn->query($sql);
-            
-                // Verifica si se encontraron resultados
-                if ($result->num_rows > 0) {
-                    // Inicio de sesión exitoso, establece la variable de sesión y redirige a catalogo.php
-                    $_SESSION['nombreUsuario'] = $username;
-                    header("Location: catalogo.php");
-                    exit();
-                } else {
-                    // Credenciales incorrectas
-                    echo "<p>Nombre de usuario o contraseña incorrectos</p>";
-                }
-            
-                // Cierra la conexión a la base de datos
-                $conn->close();
+            if (isset($error_message)) {
+                echo "<p>$error_message</p>";
             }
         ?>
-
-
+        <form action="inicio_sesion.php" method="POST">
+            <input type="text" id="username" name="username" required placeholder="Nombre de Usuario">
+            <input type="password" id="password" name="password" required placeholder="Contraseña">
+            <button type="submit">Acceder</button>
+            <a href="registro.php">Registrarse</a>
+            <a href="index.html">Volver</a>
+        </form>
     </main>
+
     <footer>
     </footer>
+
 </body>
+
 </html>

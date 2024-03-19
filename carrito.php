@@ -3,7 +3,6 @@ session_start();
 
 // Manejar la solicitud para devolver un libro
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
-    // Realizar operaciones en la base de datos para mover el libro a la tabla libro_devolto
     $servername = "localhost";
     $username = "root";
     $password = "Prueba_123";
@@ -15,24 +14,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         die("Error de conexión: " . $conn->connect_error);
     }
 
-    // Obtener información del libro seleccionado
-    $titulo = $_POST['titulo'];
-    $descripcion = $_POST['descripcion'];
-    $foto = $_POST['foto'];
+    // Obtener información del libro seleccionado (utilizar consultas preparadas)
+    $titulo = $conn->real_escape_string($_POST['titulo']);
+    $descripcion = $conn->real_escape_string($_POST['descripcion']);
+    $foto = $conn->real_escape_string($_POST['foto']);
+    $usuario_actual = $_SESSION['nombreUsuario'];
 
-    // Eliminar el libro alquilado de la tabla libro_alugado
-    $sqlDelete = "DELETE FROM libro_alugado WHERE titulo = '$titulo'";
-    if ($conn->query($sqlDelete) === TRUE) {
-        // Insertar el libro devuelto en la tabla libro_devolto
-        $sqlInsertDevuelto = "INSERT INTO libro_devolto (titulo, cantidade, descripcion, foto, usuario, editorial) VALUES ('$titulo', 1, '$descripcion', '$foto', 'usuario_prueba', 'Editorial Ejemplo')";
-        if ($conn->query($sqlInsertDevuelto) === TRUE) {
-            header("Location: carrito.php");
+    // Consulta preparada para eliminar el libro alquilado de la tabla libro_alugado
+    $sqlDelete = $conn->prepare("DELETE FROM libro_alugado WHERE titulo = ?");
+    $sqlDelete->bind_param("s", $titulo);
+
+    if ($sqlDelete->execute()) {
+        // Consulta preparada para insertar el libro devuelto en la tabla libro_devolto
+        $sqlInsertDevuelto = $conn->prepare("INSERT INTO libro_devolto (titulo, cantidade, descripcion, foto, usuario, editorial) VALUES (?, 1, ?, ?, ?, 'Editorial Ejemplo')");
+        $sqlInsertDevuelto->bind_param("ssss", $titulo, $descripcion, $foto, $usuario_actual);
+
+        if ($sqlInsertDevuelto->execute()) {
+            header("Location: carrito.php?mensaje=Libro devuelto exitosamente");
             exit();
         } else {
-            echo '<script>alert("Error al devolver el libro. Por favor, inténtalo de nuevo.");</script>';
+            $error_message = "Error al devolver el libro. Por favor, inténtalo de nuevo.";
         }
     } else {
-        echo '<script>alert("Error al devolver el libro. Por favor, inténtalo de nuevo.");</script>';
+        $error_message = "Error al devolver el libro. Por favor, inténtalo de nuevo.";
     }
 
     $conn->close();
@@ -89,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         .cart-item {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Alinea verticalmente el contenido */
+            align-items: center;
             border-bottom: 1px solid #ccc;
             padding: 10px;
             margin-bottom: 10px;
@@ -200,7 +204,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
-            // Imprimir los resultados en filas
             while ($row = $result->fetch_assoc()) {
                 echo '<div class="cart-item">';
                 echo '<img src="' . $row["foto"] . '" alt="' . $row["titulo"] . '">';

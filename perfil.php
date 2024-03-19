@@ -65,10 +65,10 @@
         }
 
         .profile-label {
-            font-size: 1em; /* Ajustado el tamaño del texto */
+            font-size: 1em;
             font-weight: bold;
             display: block;
-            margin-bottom: 5px; /* Reducido el margen inferior */
+            margin-bottom: 5px;
             color: #333;
         }
 
@@ -151,12 +151,10 @@
             <img src="https://cdn-icons-png.freepik.com/512/64/64572.png" alt="Imagen de perfil">
         </div>
         <?php
-        // Inicia la sesión
         session_start();
 
         // Verifica si el usuario está autenticado
         if (isset($_SESSION['nombreUsuario'])) {
-            // Aquí debes agregar la lógica PHP para obtener los datos del usuario de la base de datos
             $servername = "localhost";
             $username = "root";
             $password = "Prueba_123";
@@ -168,22 +166,17 @@
                 die("Conexión fallida: " . $conn->connect_error);
             }
 
-            // Obtén el nombre de usuario de la sesión
             $nombreUsuario = $_SESSION['nombreUsuario'];
 
             // Consulta SQL para obtener los datos del usuario
             $sql = "SELECT * FROM usuario WHERE usuario = '$nombreUsuario'";
             $result = $conn->query($sql);
 
-            // Verifica si se encontraron resultados
             if ($result->num_rows > 0) {
-                // Obtiene la fila de resultados como un array asociativo
                 $row = $result->fetch_assoc();
 
-                // Muestra el nombre de usuario
                 echo '<div class="profile-section"><span class="profile-value">' . $row["usuario"] . '</span></div>';
 
-                // Muestra los datos del usuario
                 echo '<div class="data-section">';
                 echo '<span class="profile-label">Contraseña:</span>';
                 echo '<span class="profile-value">' . $row["contrasinal"] . '</span>';
@@ -215,10 +208,7 @@
             header("Location: inicio_sesion.php");
             exit();
         }
-        ?>
-
-        <!-- Repite el formato para otros campos -->
-        
+        ?>        
         <a href="modificar_datos.php">Modificar datos</a>
     
         <button class="back-button" onclick="window.location.href='catalogo.php'">Volver</button>

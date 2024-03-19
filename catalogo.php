@@ -62,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alquilar'])) {
         }
 
         header img {
-            max-width: 200px; /* Ajusta el tamaño según tus necesidades */
+            max-width: 200px;
             height: auto;
             display: center;
             margin: 0 auto;
-            filter: brightness(0) invert(1); /* Cambia el color a blanco */
+            filter: brightness(0) invert(1); 
         }
 
         .cart {
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alquilar'])) {
         .book {
             position: relative;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out;

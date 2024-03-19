@@ -72,11 +72,11 @@ $conn->close();
         }
 
         header img {
-            max-width: 200px; /* Ajusta el tamaño según tus necesidades */
+            max-width: 200px;
             height: auto;
             display: block;
             margin: 0 auto;
-            filter: brightness(0) invert(1); /* Cambia el color a blanco */
+            filter: brightness(0) invert(1);
         }
 
         main {
