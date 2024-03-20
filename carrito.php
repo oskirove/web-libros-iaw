@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
         die("Error de conexión: " . $conn->connect_error);
     }
 
-    // Obtener información del libro seleccionado (utilizar consultas preparadas)
+    // Obtener información del libro seleccionado 
     $titulo = $conn->real_escape_string($_POST['titulo']);
     $descripcion = $conn->real_escape_string($_POST['descripcion']);
     $foto = $conn->real_escape_string($_POST['foto']);
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['devolver'])) {
             die("Error de conexión: " . $conn->connect_error);
         }
 
-        // Obtener el usuario actual (deberías tener la lógica para obtener el usuario actual)
+        // Obtener el usuario actual 
         $usuario_actual = "usuario_prueba";
 
         // Consulta a la base de datos para obtener libros alquilados por el usuario
